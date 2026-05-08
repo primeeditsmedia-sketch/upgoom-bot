@@ -153,12 +153,12 @@ client.on('messageCreate', async message => {
 
       userActivity[countKey]++;
 
-      if (userActivity[countKey] >= 3) {
+      if (userActivity[countKey] >= 2) {
 
         await member.roles.add(role);
 
         message.channel.send(
-          `${member} You've Unlocked Active Video Editor access!,Check out the <#1434955147284582565> channel!`
+          `${member} You've Unlocked Active Video Editor access!`
         );
       }
     }
@@ -181,17 +181,16 @@ client.on('messageCreate', async message => {
 
       userActivity[countKey]++;
 
-      if (userActivity[countKey] >= 3) {
+      if (userActivity[countKey] >= 2) {
 
         await member.roles.add(role);
 
         message.channel.send(
-          `${member} You've Unlocked The Active Designer access! Checkout`
+          `${member} You've Unlocked The Active Designer access!`
         );
       }
     }
   }
-  
 });
 
 client.on(Events.InteractionCreate, async interaction => {
