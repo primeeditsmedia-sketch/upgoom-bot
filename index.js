@@ -26,7 +26,7 @@ client.once(Events.ClientReady, async () => {
   console.log(`Logged in as ${client.user.tag}`);
   
 
-  const channel = await client.channels.fetch('1427252950903947326');
+  const channel = await client.channels.fetch('1502385422750322819');
 
   const embed = new EmbedBuilder()
     .setTitle('Pickup A Role For Yourself [Only 1]')
