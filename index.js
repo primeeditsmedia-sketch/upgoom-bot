@@ -1,4 +1,6 @@
 require('dotenv').config();
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
 
 const {
   Client,
@@ -13,7 +15,9 @@ const {
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers
+GatewayIntentBits.GuildMembers,
+GatewayIntentBits.GuildMessages,
+GatewayIntentBits.MessageContent
   ]
 });
 
@@ -89,6 +93,106 @@ client.once(Events.ClientReady, async () => {
       components: [row1, row2, row3]
     });
   }
+});
+
+
+const editorChannels = [
+  '1434955147284582565'
+];
+
+const designerChannels = [
+  '1493208129612283914'
+];
+
+const developerChannels = [
+  '1434955414100906154'
+];
+
+const animatorChannels = [
+  '1502289576138641550'
+];
+
+const userActivity = {};
+
+client.on('messageCreate', async message => {
+
+  if (message.author.bot) return;
+
+  const member = message.member;
+
+  if (!member) return;
+
+  const now = Date.now();
+
+  if (!userActivity[member.id]) {
+    userActivity[member.id] = {};
+  }
+
+  // ANTI SPAM COOLDOWN
+  if (
+    userActivity[member.id][message.channel.id] &&
+    now - userActivity[member.id][message.channel.id] < 10000
+  ) return;
+
+  userActivity[member.id][message.channel.id] = now;
+
+  // EDITOR SYSTEM
+  if (editorChannels.includes(message.channel.id)) {
+
+    const role = message.guild.roles.cache.find(
+      r => r.name === "Active Video Editor"
+    );
+
+    if (!member.roles.cache.has(role.id)) {
+
+      const countKey = `editor_${member.id}`;
+
+      if (!userActivity[countKey]) {
+        userActivity[countKey] = 0;
+      }
+
+      userActivity[countKey]++;
+
+      if (userActivity[countKey] >= 3) {
+
+        await member.roles.add(role);
+
+        message.channel.send(
+          `${member} You've Unlocked Active Video Editor access!,Check out the <#1434955147284582565> channel!`
+        );
+      }
+    }
+  }
+
+  // DESIGNER SYSTEM
+  if (designerChannels.includes(message.channel.id)) {
+
+    const role = message.guild.roles.cache.find(
+      r => r.name === "Active Designer"
+    );
+
+    if (!member.roles.cache.has(role.id)) {
+
+      const countKey = `designer_${member.id}`;
+
+      if (!userActivity[countKey]) {
+        userActivity[countKey] = 0;
+      }
+
+      userActivity[countKey]++;
+
+      if (userActivity[countKey] >= 3) {
+
+        await member.roles.add(role);
+
+        message.channel.send(
+          `${member} You've Unlocked The Active Designer access! Checkout`
+        );
+      }
+    }
+  }
+  
+});
 
 client.on(Events.InteractionCreate, async interaction => {
 
@@ -114,7 +218,11 @@ const member = await interaction.guild.members.fetch(interaction.user.id);
     agencyRole
   ].filter(Boolean);
 
-  await interaction.deferReply({ ephemeral: true });
+ const { MessageFlags } = require('discord.js');
+
+await interaction.deferReply({
+  flags: MessageFlags.Ephemeral
+});
 
   await member.roles.remove(rolesToRemove);
 
@@ -152,8 +260,6 @@ const member = await interaction.guild.members.fetch(interaction.user.id);
     await member.roles.add(agencyRole);
     await interaction.editReply({ content: '✅ Agency role added!' });
   }
-
-});
 
 });
 
