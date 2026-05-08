@@ -26,7 +26,7 @@ client.once(Events.ClientReady, async () => {
   console.log(`Logged in as ${client.user.tag}`);
   
 
-  const channel = await client.channels.fetch('1434535059020316797');
+  const channel = await client.channels.fetch('1427252950903947326');
 
   const embed = new EmbedBuilder()
     .setTitle('Pickup A Role For Yourself [Only 1]')
@@ -116,11 +116,20 @@ const userActivity = {};
 
 client.on('messageCreate', async message => {
 
+  console.log('MESSAGE EVENT TRIGGERED');
+
   if (message.author.bot) return;
 
-  const member = message.member;
+  console.log('User:', message.author.tag);
 
-  if (!member) return;
+  const member = await message.guild.members.fetch(message.author.id);
+
+  if (!member) {
+    console.log('NO MEMBER FOUND');
+    return;
+  }
+
+  console.log('Channel ID:', message.channel.id);
 
   const now = Date.now();
 
@@ -132,18 +141,32 @@ client.on('messageCreate', async message => {
   if (
     userActivity[member.id][message.channel.id] &&
     now - userActivity[member.id][message.channel.id] < 10000
-  ) return;
+  ) {
+    console.log('COOLDOWN ACTIVE');
+    return;
+  }
 
   userActivity[member.id][message.channel.id] = now;
 
   // EDITOR SYSTEM
   if (editorChannels.includes(message.channel.id)) {
 
+    console.log('EDITOR CHANNEL DETECTED');
+
     const role = message.guild.roles.cache.find(
       r => r.name === "Active Video Editor"
     );
 
-    if (!member.roles.cache.has(role.id)) {
+    if (!role) {
+      console.log('ROLE NOT FOUND');
+      return;
+    }
+
+    console.log('ROLE FOUND');
+
+    if (role && !member.roles.cache.has(role.id)) {
+
+      console.log('USER DOES NOT HAVE ROLE');
 
       const countKey = `editor_${member.id}`;
 
@@ -153,41 +176,29 @@ client.on('messageCreate', async message => {
 
       userActivity[countKey]++;
 
-      if (userActivity[countKey] >= 2) {
-
-        await member.roles.add(role);
-
-        message.channel.send(
-          `${member} You've Unlocked Active Video Editor access!`
-        );
-      }
-    }
-  }
-
-  // DESIGNER SYSTEM
-  if (designerChannels.includes(message.channel.id)) {
-
-    const role = message.guild.roles.cache.find(
-      r => r.name === "Active Designer"
-    );
-
-    if (!member.roles.cache.has(role.id)) {
-
-      const countKey = `designer_${member.id}`;
-
-      if (!userActivity[countKey]) {
-        userActivity[countKey] = 0;
-      }
-
-      userActivity[countKey]++;
+      console.log('EDITOR XP:', userActivity[countKey]);
 
       if (userActivity[countKey] >= 2) {
 
-        await member.roles.add(role);
+        console.log('TRYING TO ADD ROLE');
 
-        message.channel.send(
-          `${member} You've Unlocked The Active Designer access!`
-        );
+        try {
+
+          await member.roles.add(role);
+
+          console.log('ROLE ADDED SUCCESS');
+
+          await message.channel.send(
+            `${member} You've Unlocked Active Video Editor access!`
+          );
+
+          console.log('SUCCESS MESSAGE SENT');
+
+        } catch (err) {
+
+          console.log('ROLE ERROR:', err);
+
+        }
       }
     }
   }
