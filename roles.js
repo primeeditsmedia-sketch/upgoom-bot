@@ -1,8 +1,9 @@
 require('dotenv').config();
 
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+
 const {
-  Client,
-  GatewayIntentBits,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
@@ -11,12 +12,7 @@ const {
   MessageFlags
 } = require('discord.js');
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers
-  ]
-});
+module.exports = (client) => {
 
 client.once(Events.ClientReady, async () => {
 
@@ -159,4 +155,4 @@ client.on(Events.InteractionCreate, async interaction => {
 
 });
 
-client.login(process.env.TOKEN);
+};
