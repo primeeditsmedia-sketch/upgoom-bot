@@ -50,7 +50,7 @@ client.on('messageCreate', async message => {
   // ANTI SPAM COOLDOWN
   if (
     userActivity[member.id][message.channel.id] &&
-    now - userActivity[member.id][message.channel.id] < 1000
+    now - userActivity[member.id][message.channel.id] < 10000
   ) {
     console.log('COOLDOWN ACTIVE');
     return;
@@ -88,7 +88,7 @@ client.on('messageCreate', async message => {
 
       console.log('EDITOR XP:', userActivity[countKey]);
 
-      if (userActivity[countKey] >= 2) {
+      if (userActivity[countKey] >= 5) {
 
         console.log('TRYING TO ADD ROLE');
 
@@ -98,9 +98,10 @@ client.on('messageCreate', async message => {
 
           console.log('ROLE ADDED SUCCESS');
 
-          await message.channel.send(
-            `${member} You've Unlocked Active Video Editor access!`
-          );
+await message.channel.send(
+  `${member} You've Unlocked Active Video Editor access! Check out the <#1434955147284582565> channel.`
+);
+
 
           console.log('SUCCESS MESSAGE SENT');
 
@@ -138,15 +139,16 @@ console.log('DESIGNER XP:', userActivity[countKey]);
 
 
 
-      if (userActivity[countKey] >= 2) {
+      if (userActivity[countKey] >= 5) {
 
         try {
 
           await member.roles.add(role);
 
-          await message.channel.send(
-            `${member} You've Unlocked Active Designer access!`
-          );
+await message.channel.send(
+  `${member} You've Unlocked Active Designer access! Check out the <#1493208129612283914> channel.`
+);
+
 
         } catch (err) {
 
@@ -174,15 +176,14 @@ console.log('DESIGNER XP:', userActivity[countKey]);
 
       userActivity[countKey]++;
 
-      if (userActivity[countKey] >= 2) {
+      if (userActivity[countKey] >= 5) {
 
         try {
 
           await member.roles.add(role);
 
-          await message.channel.send(
-            `${member} You've Unlocked Active Developer access!`
-          );
+          await message.channel.send( 
+            `${member} You've Unlocked Active Developer access! Check out the <#1434955414100906154> channel.` );
 
         } catch (err) {
 
@@ -210,15 +211,14 @@ console.log('DESIGNER XP:', userActivity[countKey]);
 
       userActivity[countKey]++;
 
-      if (userActivity[countKey] >= 2) {
+      if (userActivity[countKey] >= 5) {
 
         try {
 
           await member.roles.add(role);
 
-          await message.channel.send(
-            `${member} You've Unlocked Active Animator access!`
-          );
+          await message.channel.send( 
+            `${member} You've Unlocked Active Animator access! Check out the <#1502289576138641550> channel.` );
 
         } catch (err) {
 
